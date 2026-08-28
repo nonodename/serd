@@ -298,6 +298,7 @@ main(int argc, char** argv)
         input      = input_path;
       }
       if (!input || !(in_fd = serd_fopen((const char*)input, "rb"))) {
+        serd_free(input_path);
         return 1;
       }
     }

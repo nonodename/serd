@@ -62,6 +62,9 @@ serd_file_uri_parse(const uint8_t* const uri, uint8_t** const hostname)
 
       if (hostname) {
         *hostname = (uint8_t*)calloc((size_t)(path - auth + 1), 1);
+        if (!*hostname) {
+          abort();
+        }
         memcpy(*hostname, auth, (size_t)(path - auth));
       }
     }

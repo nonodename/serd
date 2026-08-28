@@ -1251,7 +1251,9 @@ serd_writer_new(const SerdSyntax     syntax,
   assert(ssink);
 
   SerdWriter* writer = (SerdWriter*)calloc(1, sizeof(SerdWriter));
-
+  if (!writer) {
+    return writer;
+  }
   writer->syntax     = syntax;
   writer->style      = style;
   writer->env        = env;

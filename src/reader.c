@@ -107,7 +107,7 @@ push_node_padded(SerdReader* const reader,
 #ifdef SERD_STACK_CHECK
   reader->allocs = (Ref*)realloc(reader->allocs,
                                  sizeof(reader->allocs) * (++reader->n_allocs));
-
+  assert(reader->allocs);
   reader->allocs[reader->n_allocs - 1] = ref;
 #endif
 
@@ -211,6 +211,9 @@ serd_reader_new(const SerdSyntax syntax,
                 const SerdEndSink       end_sink)
 {
   SerdReader* me     = (SerdReader*)calloc(1, sizeof(SerdReader));
+  if (!me) {
+    return me;
+  }
   me->handle         = handle;
   me->free_handle    = free_handle;
   me->base_sink      = base_sink;

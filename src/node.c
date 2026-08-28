@@ -167,7 +167,9 @@ serd_node_new_file_uri(const uint8_t* const path,
   if (is_dir_sep((char)path[0]) || is_windows) {
     uri_len = strlen("file://") + hostname_len + is_windows;
     uri     = (uint8_t*)calloc(uri_len + 1, 1);
-
+    if(!uri) {
+      abort();
+    }
     memcpy(uri, "file://", 7);
 
     if (hostname) {
@@ -278,6 +280,9 @@ serd_node_new_decimal(const double d, const unsigned frac_digits)
   const double   abs_d      = fabs(d);
   const unsigned int_digits = serd_digits(abs_d);
   char*          buf        = (char*)calloc(int_digits + frac_digits + 3, 1);
+  if (!buf) {
+    abort();
+  }
   SerdNode       node       = {(const uint8_t*)buf, 0, 0, 0, SERD_LITERAL};
   const double   int_part   = floor(abs_d);
 
@@ -329,6 +334,9 @@ serd_node_new_integer(const int64_t i)
   uint64_t       abs_i  = (uint64_t)((i < 0) ? -i : i);
   const unsigned digits = serd_digits((double)abs_i);
   char*          buf    = (char*)calloc(digits + 2, 1);
+  if (!buf) {
+    abort();
+  }
   SerdNode       node   = {(const uint8_t*)buf, 0, 0, 0, SERD_LITERAL};
 
   // Point s to the end
@@ -357,6 +365,9 @@ serd_node_new_blob(const void* const buf,
 
   const size_t len  = serd_base64_get_length(size, wrap_lines);
   uint8_t*     str  = (uint8_t*)calloc(len + 2, 1);
+  if (!str) {
+    abort();
+  }
   SerdNode     node = {str, len, len, 0, SERD_LITERAL};
 
   if (serd_base64_encode(str, buf, size, wrap_lines)) {

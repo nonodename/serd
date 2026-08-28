@@ -125,8 +125,9 @@ serd_env_add(SerdEnv* const        env,
     }
   } else {
     SerdPrefix* const new_prefixes = (SerdPrefix*)realloc(
-      env->prefixes, (++env->n_prefixes) * sizeof(SerdPrefix));
+      env->prefixes, (env->n_prefixes + 1) * sizeof(SerdPrefix));
     if (new_prefixes) {
+      env->n_prefixes++;
       env->prefixes                           = new_prefixes;
       env->prefixes[env->n_prefixes - 1].name = serd_node_copy(name);
       env->prefixes[env->n_prefixes - 1].uri  = serd_node_copy(uri);
@@ -264,6 +265,9 @@ serd_env_expand_node(const SerdEnv* const env, const SerdNode* const node)
 
     const size_t len = prefix.len + suffix.len;
     uint8_t*     buf = (uint8_t*)malloc(len + 1);
+    if (!buf) {
+      abort();
+    }
     SerdNode     ret = {buf, len, 0, 0, SERD_URI};
     snprintf((char*)buf, len + 1, "%s%s", prefix.buf, suffix.buf);
     ret.n_chars = serd_strlen(buf, NULL, NULL);

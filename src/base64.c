@@ -51,6 +51,8 @@ encode_chunk(uint8_t out[4], const uint8_t in[3], const size_t n_in)
 size_t
 serd_base64_get_length(const size_t size, const bool wrap_lines)
 {
+  // if size = 0 and wrap_lines is true then this will underflow
+  assert(size > 0);
   return ((size + 2) / 3 * 4) + (wrap_lines * ((size - 1) / 57));
 }
 
@@ -103,7 +105,9 @@ serd_base64_decode(const uint8_t* const str,
   assert(size);
 
   void* buf = malloc(((len * 3) / 4) + 2);
-
+  if (!buf) {
+    abort();
+  }
   *size = 0;
   for (size_t i = 0, j = 0; i < len; j += 3) {
     uint8_t in[] = "====";
